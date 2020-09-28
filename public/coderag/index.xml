@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Coderags on Jan Löwenstrom</title>
+    <link>https://jan.lwenstrom.net/coderag/</link>
+    <description>Recent content in Coderags on Jan Löwenstrom</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Fri, 08 Nov 2019 17:32:51 +0100</lastBuildDate>
+    
+	<atom:link href="https://jan.lwenstrom.net/coderag/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Useful git commands</title>
+      <link>https://jan.lwenstrom.net/coderag/git/</link>
+      <pubDate>Fri, 08 Nov 2019 17:32:51 +0100</pubDate>
+      
+      <guid>https://jan.lwenstrom.net/coderag/git/</guid>
+      <description>Just a collection of useful git commands.
+git commit --amend --no-edit  The no-edit flag will allow you to make the amendment to your commit without changing its commit message. You need to force push if already pushed to a remote.
+git push -f origin master  </description>
+    </item>
+    
+  </channel>
+</rss>

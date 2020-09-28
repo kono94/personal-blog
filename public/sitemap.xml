@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://jan.lwenstrom.net/blog/</loc>
+    <lastmod>2019-12-13T16:08:45+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://jan.lwenstrom.net/blog/git-large-files/</loc>
+    <lastmod>2019-12-13T16:08:45+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://jan.lwenstrom.net/</loc>
+    <lastmod>2019-12-13T16:08:45+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://jan.lwenstrom.net/blog/git/</loc>
+    <lastmod>2019-11-08T17:32:51+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://jan.lwenstrom.net/blog/hugo/</loc>
+    <lastmod>2019-11-08T17:05:37+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://jan.lwenstrom.net/about/</loc>
+    <lastmod>2019-11-08T17:05:33+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://jan.lwenstrom.net/categories/</loc>
+  </url>
+  
+  <url>
+    <loc>https://jan.lwenstrom.net/tags/</loc>
+  </url>
+  
+</urlset>

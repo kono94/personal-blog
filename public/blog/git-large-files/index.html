@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<meta name="description" content="Person Blog">
+<meta name="keywords" content="portfolio,blog,developer,jan,löwenstrom">
+
+<base href="https://jan.lwenstrom.net/">
+
+<title>
+  Jan Löwenstrom - Git - Remove Large Files 
+</title>
+
+<meta name="generator" content="Hugo 0.59.1" />
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400|Roboto+Slab:400,700|Roboto:300,300i,400,400i,500,500i,700,700i">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+<link rel="stylesheet" href="https://jan.lwenstrom.net/css/main.css">
+<link rel="stylesheet" href="https://jan.lwenstrom.net/css/custom.css">
+
+
+
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="theme-color" content="#ffffff">
+
+</head>
+<body lang="en-US">
+<div class="container">
+
+
+<header class="row text-left title">
+  <h1 class="title">Git - Remove Large Files</h1>
+</header>
+<section id="category-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-left meta">
+        PUBLISHED ON DEC 13, 13129 
+      
+    </h6>
+  </div>
+  
+</section>
+<section id="content-pane" class="row">
+  <div class="col-md-12 text-justify content">
+    
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#check-your-repo-for-large-files">Check your repo for large files</a>
+<ul>
+<li><a href="#linux">Linux</a></li>
+<li><a href="#mac">Mac</a></li>
+<li><a href="#add-as-alias">Add as alias</a></li>
+<li><a href="#remove-big-files-and-force-push">Remove big files and force push</a>
+<ul>
+<li><a href="#option-1-not-preferred">Option 1 (not preferred)</a></li>
+<li><a href="#option-2">Option 2</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+    
+    
+
+<h2 id="check-your-repo-for-large-files">Check your repo for large files</h2>
+
+<h3 id="linux">Linux</h3>
+
+<pre><code>git rev-list --objects --all \
+ | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' \
+ | sed -n 's/^blob //p' \
+ | sort --numeric-sort --key=2 \
+ | gcut -c 1-12,41- \
+| $(command -v gnumfmt || echo gnumfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
+</code></pre>
+
+<h3 id="mac">Mac</h3>
+
+<pre><code>brew install coreutils
+</code></pre>
+
+<p>For Mac one has to adapt the command by changing <code>cut</code> to <code>gcut</code>
+and <code>numfmt</code> to <code>gnumfmt</code></p>
+
+<pre><code>git rev-list --objects --all \
+ | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' \
+ | sed -n 's/^blob //p' \
+ | sort --numeric-sort --key=2 \
+ | gcut -c 1-12,41- \
+| $(command -v gnumfmt || echo gnumfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
+</code></pre>
+
+<h3 id="add-as-alias">Add as alias</h3>
+
+<p>Add this to your <code>~/.bash_profile</code> or <code>~/.bashrc</code> :</p>
+
+<pre><code>if [ -f ~/.bash_aliases ]; then
+. ~/.bash_aliases
+fi
+</code></pre>
+
+<p>Create or add to your <code>~/.bash_aliases</code>:</p>
+
+<pre><code>  alias git_large=&quot;git rev-list --objects --all | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' | sed -n 's/^blob //p' | sort --numeric-sort --key=2 | gcut -c 1-12,41-  | $(command -v gnumfmt || echo gnumfmt) --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest&quot;
+</code></pre>
+
+<p><br><br></p>
+
+<h3 id="remove-big-files-and-force-push">Remove big files and force push</h3>
+
+<h4 id="option-1-not-preferred">Option 1 (not preferred)</h4>
+
+<p><br></p>
+
+<pre><code>git filter-branch --index-filter 'git rm --cached --ignore-unmatch file1 file2' HEAD
+</code></pre>
+
+<pre><code>git reflog expire --expire=now --all &amp;&amp; git gc --prune=now --aggressive
+</code></pre>
+
+<pre><code>git push --force
+</code></pre>
+
+<p><br></p>
+
+<h4 id="option-2">Option 2</h4>
+
+<p>Get BFG-repo-cleaner:</p>
+
+<pre><code>git clone https://github.com/rtyley/bfg-repo-cleaner.git
+</code></pre>
+
+<p>or</p>
+
+<pre><code>brew install bfg
+</code></pre>
+
+<p>Cleanup unnecessary files and optimize the local repository:</p>
+
+<pre><code>git gc
+</code></pre>
+
+<p>Delete all files from history which are bigger than 10 Megabytes:</p>
+
+<pre><code>dfg --strip-blobs-bigger-than 10M .git
+</code></pre>
+
+<p>or</p>
+
+<pre><code>java -jar ~/opt/bfg-1.13.0.jar --strip-blobs-bigger-than 10M .git
+</code></pre>
+
+<p>Reflect your changes:</p>
+
+<pre><code>git reflog expire --expire=now --all &amp;&amp; git gc --prune=now --aggressive
+</code></pre>
+
+<p>Push to remote (&ldquo;with-lease&rdquo; =&gt; this will fail if someone updated the HEAD of the master branch):</p>
+
+<pre><code>git push origin master --force-with-lease
+</code></pre>
+
+<p>In Gitlab go into the <code>Settings &gt; Repository &gt; Repository cleanup</code> and upload the
+<code>object-id-map.old-new.txt</code> file, located in the <code>.git.bfg-report</code>-folder</p>
+
+<p><strong>Done!</strong></p>
+
+  </div>
+</section>
+<section id="tag-pane" class="row meta">
+  
+  <div class="col-md-12">
+    <h6 class="text-right meta">
+      
+    </h6>
+  </div>
+  
+</section>
+
+
+
+
+
+
+
+
+<section id="menu-pane" class="row menu text-center">
+  
+  
+  <span><a class="menu-item" href="https://jan.lwenstrom.net/blog/git/">&lt; prev | </a></span>
+  
+  
+  <span><a class="menu-item" href="/blog">blog</a></span>
+  
+  
+  
+  <h4 class="text-center"><a class="menu-item" href="https://jan.lwenstrom.net/">home</a></h4>
+</section>
+
+
+
+<footer class="row text-center footer">
+  <hr />
+  
+  <h6 class="text-center copyright"></h6>
+  
+  <h6 class="text-center powered">Powered by <a href="https://gohugo.io/">Hugo  v0.59.1</a> &amp; <a href="https://github.com/shenoybr/hugo-goa">Goa</a>.</h6>
+  
+      
+      <h6><a href="" aria-label="RSS Feed"><i class="fas fa-rss" aria-hidden="true"></i></a></h6>
+    
+  
+</footer>
+
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  
+
+<script type="text/javascript">
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'XYZ', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="js/main.js"></script>
+<script src="js/custom.js"></script>
+</body>
+</html>
+
+
